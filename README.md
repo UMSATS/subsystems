@@ -13,7 +13,10 @@ Contains software/documents related to the subsystems board for UMSATS 2018.
 Atmel Studio 7 is required to build and run the Atmel Studio project for this repo. It can be downloaded from here: http://www.microchip.com/mplab/avr-support/atmel-studio-7
 
 ## Arduino Model
-For non-hardware specific portions of the software, they can be developed with the Arduino Due model in source/cdh. The Arduino model requires the following libraries:
+For non-hardware specific portions of the software, they can be developed with the Arduino Due model in:
+* source/SubSystemsBoardSoftware/src/cdh
+
+The Arduino model requires the following libraries:
 * https://github.com/collin80/due_can
 * https://github.com/collin80/can_common
 * https://github.com/greiman/FreeRTOS-Arduino 
