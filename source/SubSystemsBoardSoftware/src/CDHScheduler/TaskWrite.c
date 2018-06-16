@@ -8,6 +8,8 @@
 // - Removed power monitor flags.
 // 2018-06-11 by Tamkin Rahman
 // - Move input mocking to "changeMockPower" task (renamed to MockInput).
+// 2018-06-15 by Tamkin Rahman
+// - Add delay at the end of "MockInput"'s while loop.
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- INCLUDES --------------------------------------------------------------
@@ -137,9 +139,11 @@ void MockInput(void *params) {
 			powerReading = valueRead;
 			SerialPrint("Changed the power to ");
 			SerialPrintInt(powerReading);
-				SerialPrint("\r\n");
+			SerialPrint("\r\n");
 		}
 	}
+	
+	vTaskDelayUntil(&lastWakeTime, frequency);
   }
 }
 

@@ -73,17 +73,17 @@ static void CpuMonitor(void *pvParameters);
 
 // For tasks that make liberal use of SerialPrint, it seems they are fairly happy (i.e. no crashes) if they are allocated a lot of stack space...
 TaskInfo CDH_PeriodicTaskTable[TOTAL_NUMBER_OF_TASKS] =
-//				                      name,             priority,  stack depth,               task function,    task parameters,                      task handle,   power priority
+//                                    name,             priority,       stack depth,               task function,    task parameters,                      task handle,   power priority
 {
-  { (const char *)"Hello World high",                 (UBaseType_t) 2,          256,      TaskWrite_high_priority,              NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
-  { (const char *)"Hello World low",                  (UBaseType_t) 2,          256,      TaskWrite_low_priority,               NULL,            (TaskHandle_t) NULL,  SOMETIMES_ON },
+  //{ (const char *)"Hello World high",                 (UBaseType_t) 2,          256,      TaskWrite_high_priority,              NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
+  //{ (const char *)"Hello World low",                  (UBaseType_t) 2,          256,      TaskWrite_low_priority,               NULL,            (TaskHandle_t) NULL,  SOMETIMES_ON },
   { (const char *)"Change Mock Power",                (UBaseType_t) 2,          256,      MockInput,                            NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
   
   { (const char *)"CAN Message Manager",              (UBaseType_t) 2,          1024,     CANManager,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
-  { (const char *)"CAN Monitor",                      (UBaseType_t) 2,          512,      CANMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
+  { (const char *)"CAN Monitor",                      (UBaseType_t) 2,          1024,      CANMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
   { (const char *)"Time Delay Task Manager",          (UBaseType_t) 2,          1024,     TimeDelayedTaskManager,               NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
   
-  { (const char *)"CPU Monitor",                      (UBaseType_t) 1,          256,      CpuMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
+  //{ (const char *)"CPU Monitor",                      (UBaseType_t) 1,          256,      CpuMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
 };
 
 

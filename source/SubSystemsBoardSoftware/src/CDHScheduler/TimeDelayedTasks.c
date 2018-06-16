@@ -6,6 +6,9 @@
 // History
 // 2018-06-03 by Tamkin Rahman
 // - Created.
+// 2018-06-15 by Tamkin Rahman
+// - Fix bug where the TimeDelayedTaskManager was accessing the queue without first taking the
+//   semaphore for the queue.
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- INCLUDES --------------------------------------------------------------
@@ -18,7 +21,7 @@
 // -----------------------------------------------------------------------------------------------
 // ----------------------- DEFINES ---------------------------------------------------------------
 // -----------------------------------------------------------------------------------------------
-#define MAX_QUEUE_SIZE         512
+#define MAX_QUEUE_SIZE         256
 #define MAX_COMMAND_DATA_BYTES 8
 
 // -----------------------------------------------------------------------------------------------
@@ -126,10 +129,12 @@ void TimeDelayedTaskManager(void *pvParameters)
   
   while (1)
   {
-      SerialPrint("Time Delay Task Manager running\r\n");
+      //SerialPrint("Time Delay Task Manager running\r\n");
 
       if (Queue_index > 0)
       {
+		  
+		WaitForSemaphore( taskQueueLock );
         // Need to traverse backwards through the array, so that removing
         // an element from the Queue doesn't affect ix.
         for (ix = (Queue_index - 1); ix >= 0; ix--)
@@ -154,6 +159,7 @@ void TimeDelayedTaskManager(void *pvParameters)
             SerialPrint(")\r\n");
           }
         }
+		xSemaphoreGive( taskQueueLock );
       }
       
       vTaskDelayUntil(&lastWakeTime, frequency);
@@ -194,9 +200,13 @@ void RemoveFromQueue(int index)
            TaskQueue[ix - 1].CommandData.bytes[ixCommand] = TaskQueue[ix].CommandData.bytes[ixCommand];
          }
       }
+	  Queue_index--;
     }
-    Queue_index--;
-
+	else if (Queue_index == 1)
+	{	
+		Queue_index--;
+	}
+	
     SerialPrint("Removed queue element at index ");
     SerialPrintInt(index);
     SerialPrint(".\r\n");

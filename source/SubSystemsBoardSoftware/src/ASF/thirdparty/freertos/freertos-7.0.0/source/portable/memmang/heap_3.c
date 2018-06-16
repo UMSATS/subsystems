@@ -2,12 +2,13 @@
 //
 // File Description:
 //	FreeRTOS definitions for allocating/deallocating memory. Note that we are assuming
-//	no memory is deallocated (i.e. deleted) for this project, so the most simple "heap_1.c"
-//  is being used.
+//	no memory is deallocated (i.e. deleted) for this project.
 //
 // History
 // 2018-06-12 by Tamkin Rahman
-// - Added to project.
+// - Added to project. 
+// 2018-06-15 by Tamkin Rahman
+// Running into grief with heap_1... continue using heap_3 and rename to correct heap type...
 
 /*
     FreeRTOS V7.0.0 - Copyright (C) 2011 Real Time Engineers Ltd.

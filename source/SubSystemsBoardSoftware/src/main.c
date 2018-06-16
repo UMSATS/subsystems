@@ -8,6 +8,8 @@
 // History
 // 2018-06-12 by Tamkin Rahman
 // - Created.
+// 2018-06-16 by Tamkin Rahman
+// - Added (rudimentary) CAN message receiver.
 
 
 //----------------------------------------------------------------------------
@@ -18,6 +20,7 @@
 #include <string.h>
 
 /* Environment header files. */
+#include "can.h"
 #include "power_clocks_lib.h"
 #include "gpio.h"
 #include "sysclk.h"
@@ -47,6 +50,9 @@ static void cdh_printf(const char *theString);
 // CDH Implementation of a "print int" method to print integers.
 static void cdh_printInt(int print_value);
 
+// CAN initialization routine. Should be called after the oscillator is set up.
+static char cdh_can_init();
+
 // Blinking LED task for the dev board.
 static void vBlinking( void *pvParameters );
 
@@ -60,6 +66,8 @@ int main( void )
 	// Use the subsystems external oscillator. 
 	// If the oscillator used is changed, make sure to update FreeRTOSConfig.h.
 	pcl_switch_to_osc(PCL_OSC0, FOSC0, OSC0_STARTUP);
+
+	cdh_can_init();
 
 	// Call a local utility routine to initialize C-Library Standard I/O over
 	// a USB CDC protocol. Tunable parameters in a conf_usb.h file must be
@@ -99,7 +107,7 @@ int main( void )
 	
 	// Will get here if there's insufficient RAM.
 	printf("ERROR: Insufficient RAM.");
-	while(1){}
+ 	while(1){}
 
 	return 0;
 }
@@ -125,7 +133,19 @@ void SerialPrint(const char * text)
 	if (schedulerStarted)
 	{
 		WaitForSemaphore( printLock );
-		cdh_printf(text);
+		char buf[100];
+		int s=0;
+			
+		strcpy(buf, text);
+			
+		while (buf[s] != '\0')
+		{
+			if( udi_cdc_is_tx_ready() )
+			{
+				stdio_usb_putchar(NULL, buf[s]);
+			}
+			s++;
+		}
 		xSemaphoreGive( printLock );
 	}
 }
@@ -138,18 +158,6 @@ void SerialPrintInt(int text)
 		WaitForSemaphore( printLock );
 		cdh_printInt(text);
 		xSemaphoreGive( printLock );
-	}
-}
-
-// --------------------------------------------------------------------------------
-// Stub until we get CAN working.
-void CANMonitor(void *pvParameters)
-{
-	UNUSED(pvParameters);
-	
-	while (1)
-	{
-		vTaskDelay(2000000);
 	}
 }
 
@@ -210,4 +218,120 @@ static char cdh_getchar(char default_result)
 	}
 	
 	return rc;
+}
+
+// --------------------------------------------------------------------------------
+// Rx can message object.
+can_msg_t rx_msg =
+{
+	0,                // Identifier
+	0,                // Mask
+	0x0LL,            // Data
+};
+
+// Rx Message object.
+can_mob_t rx_mob =
+{
+	CAN_MOB_NOT_ALLOCATED, 			// Handle: by default CAN_MOB_NOT_ALLOCATED
+	&rx_msg,	   					// Pointer on CAN Message
+	8,		                		// Data length DLC
+	CAN_DATA_FRAME,        	        // Request type : CAN_DATA_FRAME or CAN_REMOTE_FRAME
+	CAN_STATUS_NOT_COMPLETED	    // Status: by default CAN_STATUS_NOT_COMPLETED
+};
+
+volatile can_msg_t mob_ram_ch0[NB_MOB_CHANNEL];
+
+static char cdh_can_init()
+{
+	// Generic clock must be set up in order to use CAN.
+	/* Setup the generic clock for CAN */
+	scif_gc_setup(AVR32_SCIF_GCLK_CANIF, SCIF_GCCTRL_OSC0, AVR32_SCIF_GC_NO_DIV_CLOCK, 0);
+			
+	/* Now enable the generic clock */
+	scif_gc_enable(AVR32_SCIF_GCLK_CANIF);
+	
+	static const gpio_map_t CAN_GPIO_MAP = {
+			{AVR32_CANIF_RXLINE_0_1_PIN, AVR32_CANIF_RXLINE_0_1_FUNCTION},
+			{AVR32_CANIF_TXLINE_0_1_PIN, AVR32_CANIF_TXLINE_0_1_FUNCTION}
+		};
+		
+	/* Assign GPIO to CAN. */
+	gpio_enable_module(CAN_GPIO_MAP, sizeof(CAN_GPIO_MAP) / sizeof(CAN_GPIO_MAP[0]));
+	
+	can_init(CAN_CHANNEL_0, ((uint32_t)&mob_ram_ch0[0]), CANIF_CHANNEL_MODE_NORMAL, NULL);
+	
+	rx_mob.handle = can_mob_alloc(CAN_CHANNEL_0);
+	
+	/* Initialize RX message */
+	can_rx(CAN_CHANNEL_0, rx_mob.handle, rx_mob.req_type, rx_mob.can_msg);
+	int ix = 0;
+	#if 0
+	for (;;) {
+		/* Do nothing; interrupts handle the DAC conversions */
+		if (CANIF_channel_receive_status(0))
+		{
+			ix ++;
+			while (CANIF_channel_receive_status(0)) {}
+					
+			rx_mob.can_msg->data.u64 =
+			can_get_mob_data(CAN_CHANNEL_0, 0).u64;
+			rx_mob.can_msg->id = can_get_mob_id(CAN_CHANNEL_0, 0);
+			rx_mob.dlc = can_get_mob_dlc(CAN_CHANNEL_0, 0);
+			rx_mob.status = CAN_STATUS_COMPLETED;
+			can_mob_free(CAN_CHANNEL_0, 0);
+		}
+		else
+		{
+			ix--;
+		}
+	}
+	#endif
+}
+
+// --------------------------------------------------------------------------------
+// Stub until we get CAN working.
+void CANMonitor(void *pvParameters)
+{
+	UNUSED(pvParameters);
+	
+	int ix;
+	TickType_t lastWakeTime;
+
+	//CAN_Message currentTxMessage;
+	CAN_Message currentRxMessage;
+	    
+	const TickType_t frequency = pdMS_TO_TICKS( 1 ); // Run every 1 ms.
+
+	lastWakeTime = xTaskGetTickCount();
+	while (1)
+	{
+		if (CANIF_channel_receive_status(0))
+		{
+			while (CANIF_channel_receive_status(0)) {}
+			
+			rx_mob.can_msg->data.u64 =
+			can_get_mob_data(CAN_CHANNEL_0, 0).u64;
+			rx_mob.can_msg->id = can_get_mob_id(CAN_CHANNEL_0, 0);
+			rx_mob.dlc = can_get_mob_dlc(CAN_CHANNEL_0, 0);
+			rx_mob.status = CAN_STATUS_COMPLETED;
+			can_mob_free(CAN_CHANNEL_0, 0);
+			
+			currentRxMessage.id = rx_mob.can_msg->id;
+			currentRxMessage.extended = rx_mob.can_msg->ide_bit;
+			currentRxMessage.length = rx_mob.dlc;
+			
+			for (ix = 0; ix< currentRxMessage.length; ix++)
+			{
+				currentRxMessage.data.bytes[ix] = (char)rx_mob.can_msg->data.u8[ix];
+			}
+			
+			while (AddToRXQueue(&currentRxMessage) == 0)
+			{
+				// Prefer this to yielding.
+				vTaskDelay(0);
+			}
+		}
+		
+		vTaskDelayUntil(&lastWakeTime, frequency);
+	}
 }
