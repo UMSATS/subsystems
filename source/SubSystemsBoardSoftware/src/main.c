@@ -9,7 +9,7 @@
 // 2018-06-12 by Tamkin Rahman
 // - Created.
 // 2018-06-16 by Tamkin Rahman
-// - Added (rudimentary) CAN message receiver.
+// - Added (rudimentary) CAN message receiver and transmitter.
 
 
 //----------------------------------------------------------------------------
@@ -221,7 +221,7 @@ static char cdh_getchar(char default_result)
 }
 
 // --------------------------------------------------------------------------------
-// Rx can message object.
+// Rx can message.
 can_msg_t rx_msg =
 {
 	0,                // Identifier
@@ -234,6 +234,22 @@ can_mob_t rx_mob =
 {
 	CAN_MOB_NOT_ALLOCATED, 			// Handle: by default CAN_MOB_NOT_ALLOCATED
 	&rx_msg,	   					// Pointer on CAN Message
+	8,		                		// Data length DLC
+	CAN_DATA_FRAME,        	        // Request type : CAN_DATA_FRAME or CAN_REMOTE_FRAME
+	CAN_STATUS_NOT_COMPLETED	    // Status: by default CAN_STATUS_NOT_COMPLETED
+};
+can_msg_t tx_msg =
+{
+	0,                // Identifier
+	0,                // Mask
+	0x0LL,            // Data
+};
+
+// Tx Message object.
+can_mob_t tx_mob = 
+{
+	CAN_MOB_NOT_ALLOCATED, 			// Handle: by default CAN_MOB_NOT_ALLOCATED
+	&tx_msg,     					// Pointer on CAN Message
 	8,		                		// Data length DLC
 	CAN_DATA_FRAME,        	        // Request type : CAN_DATA_FRAME or CAN_REMOTE_FRAME
 	CAN_STATUS_NOT_COMPLETED	    // Status: by default CAN_STATUS_NOT_COMPLETED
@@ -261,11 +277,11 @@ static char cdh_can_init()
 	can_init(CAN_CHANNEL_0, ((uint32_t)&mob_ram_ch0[0]), CANIF_CHANNEL_MODE_NORMAL, NULL);
 	
 	rx_mob.handle = can_mob_alloc(CAN_CHANNEL_0);
+	tx_mob.handle = can_mob_alloc(CAN_CHANNEL_0);
 	
-	/* Initialize RX message */
 	can_rx(CAN_CHANNEL_0, rx_mob.handle, rx_mob.req_type, rx_mob.can_msg);
-	int ix = 0;
 	#if 0
+	int ix = 0;
 	for (;;) {
 		/* Do nothing; interrupts handle the DAC conversions */
 		if (CANIF_channel_receive_status(0))
@@ -289,7 +305,6 @@ static char cdh_can_init()
 }
 
 // --------------------------------------------------------------------------------
-// Stub until we get CAN working.
 void CANMonitor(void *pvParameters)
 {
 	UNUSED(pvParameters);
@@ -297,7 +312,7 @@ void CANMonitor(void *pvParameters)
 	int ix;
 	TickType_t lastWakeTime;
 
-	//CAN_Message currentTxMessage;
+	CAN_Message currentTxMessage;
 	CAN_Message currentRxMessage;
 	    
 	const TickType_t frequency = pdMS_TO_TICKS( 1 ); // Run every 1 ms.
@@ -305,33 +320,66 @@ void CANMonitor(void *pvParameters)
 	lastWakeTime = xTaskGetTickCount();
 	while (1)
 	{
+		while (0 != GetNextCANTXMessage(&currentTxMessage))
+		{
+			tx_mob.can_msg->id = currentTxMessage.id;
+			tx_mob.dlc = currentTxMessage.length;
+			tx_mob.can_msg->ide_bit = currentTxMessage.extended;
+
+			for (ix = 0; ix < tx_mob.dlc; ix++)
+			{
+				tx_mob.can_msg->data.u8[ix] = currentTxMessage.data.bytes[ix];
+			}
+			
+			can_tx(CAN_CHANNEL_0, tx_mob.handle, tx_mob.dlc, tx_mob.req_type, tx_mob.can_msg);
+			
+			while (CANIF_channel_transmit_status(CAN_CHANNEL_0)){} // Block until finished transmitting.
+				
+			// Transmit the message.
+			SerialPrint("Transmitted message with\r\n    ID: ");
+			SerialPrintInt(currentTxMessage.id);
+			SerialPrint("\r\n    Length: ");
+			SerialPrintInt(currentTxMessage.length);
+			SerialPrint("\r\n    Bytes : ");
+			for (ix = 0; ix < currentTxMessage.length; ix++)
+			{
+				SerialPrintInt(currentTxMessage.data.bytes[ix]);
+				SerialPrint(" ");
+			}
+			SerialPrint("\r\n");
+		}
+		/* Initialize RX message */
 		if (CANIF_channel_receive_status(0))
 		{
 			while (CANIF_channel_receive_status(0)) {}
 			
-			rx_mob.can_msg->data.u64 =
-			can_get_mob_data(CAN_CHANNEL_0, 0).u64;
-			rx_mob.can_msg->id = can_get_mob_id(CAN_CHANNEL_0, 0);
-			rx_mob.dlc = can_get_mob_dlc(CAN_CHANNEL_0, 0);
-			rx_mob.status = CAN_STATUS_COMPLETED;
-			can_mob_free(CAN_CHANNEL_0, 0);
-			
-			currentRxMessage.id = rx_mob.can_msg->id;
-			currentRxMessage.extended = rx_mob.can_msg->ide_bit;
-			currentRxMessage.length = rx_mob.dlc;
-			
-			for (ix = 0; ix< currentRxMessage.length; ix++)
+			if (rx_mob.req_type == CAN_DATA_FRAME)
 			{
-				currentRxMessage.data.bytes[ix] = (char)rx_mob.can_msg->data.u8[ix];
+				rx_mob.can_msg->data.u64 =
+				can_get_mob_data(CAN_CHANNEL_0, 0).u64;
+				rx_mob.can_msg->id = can_get_mob_id(CAN_CHANNEL_0, 0);
+				rx_mob.dlc = can_get_mob_dlc(CAN_CHANNEL_0, 0);
+				rx_mob.status = CAN_STATUS_COMPLETED;
+				can_mob_free(CAN_CHANNEL_0, 0);
+						
+				currentRxMessage.id = rx_mob.can_msg->id;
+				currentRxMessage.extended = rx_mob.can_msg->ide_bit;
+				currentRxMessage.length = rx_mob.dlc;
+						
+				for (ix = 0; ix< currentRxMessage.length; ix++)
+				{
+					currentRxMessage.data.bytes[ix] = (char)rx_mob.can_msg->data.u8[ix];
+				}
+						
+				while (AddToRXQueue(&currentRxMessage) == 0)
+				{
+					// Prefer this to yielding.
+					vTaskDelay(0);
+				}	
 			}
-			
-			while (AddToRXQueue(&currentRxMessage) == 0)
-			{
-				// Prefer this to yielding.
-				vTaskDelay(0);
-			}
+			can_rx(CAN_CHANNEL_0, rx_mob.handle, rx_mob.req_type, rx_mob.can_msg);
 		}
 		
-		vTaskDelayUntil(&lastWakeTime, frequency);
+		//vTaskDelayUntil(&lastWakeTime, frequency);
 	}
 }

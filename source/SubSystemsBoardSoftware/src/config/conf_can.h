@@ -71,6 +71,11 @@
 //             can stack API and datasheet in order to update the can stack to register interrupts in a way that FreeRTOS is happy with.
 // #define CAN_LIB_UNDER_INTERRUPT
 
+
+// Refer to section 29.6.1.1 of the AT32UC3C datasheet for configuring the CAN baudrate.
+// Must follow this formula: (PRS + PHS1 + PHS2 + 4) x (PRES + 1) x PGCLK_CANIF
+//
+
 #define CAN_BAUDRATE_1MHZ_CANCLOCK_16MHz
 #define CAN_BAUDRATE_1MHZ_CANCLOCK_16MHz_SJW         1
 #define CAN_BAUDRATE_1MHZ_CANCLOCK_16MHz_PRES        1
