@@ -379,7 +379,7 @@ void CANMonitor(void *pvParameters)
 			}
 			can_rx(CAN_CHANNEL_0, rx_mob.handle, rx_mob.req_type, rx_mob.can_msg);
 		}
-		
+		taskYIELD();
 		//vTaskDelayUntil(&lastWakeTime, frequency);
 	}
 }
