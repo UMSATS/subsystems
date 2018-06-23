@@ -10,6 +10,8 @@
 // - Created.
 // 2018-06-11 by Tamkin Rahman
 // - Move Atmel Studio related defines to this file.
+// 2018-06-23 by Tamkin Rahman
+// - Enabled SERIAL_OVER_CAN feature.
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- INCLUDES --------------------------------------------------------------
@@ -45,6 +47,8 @@
   extern int schedulerStarted;
   
   #define WaitForSemaphore( lock ) while (!schedulerStarted){} while( xSemaphoreTake( lock, portMAX_DELAY ) != pdTRUE ){} 
+	  
+  #define SERIAL_OVER_CAN
 #else
   #define WaitForSemaphore( lock ) while( xSemaphoreTake( lock, portMAX_DELAY ) != pdTRUE ){} 
 #endif

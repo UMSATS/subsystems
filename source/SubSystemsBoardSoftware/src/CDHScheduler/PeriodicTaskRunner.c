@@ -80,8 +80,8 @@ TaskInfo CDH_PeriodicTaskTable[TOTAL_NUMBER_OF_TASKS] =
   { (const char *)"Change Mock Power",                (UBaseType_t) 2,          256,      MockInput,                            NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
   
   { (const char *)"CAN Message Manager",              (UBaseType_t) 2,          1024,     CANManager,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
-  { (const char *)"CAN Monitor",                      (UBaseType_t) 2,          1024,      CANMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
   { (const char *)"Time Delay Task Manager",          (UBaseType_t) 2,          1024,     TimeDelayedTaskManager,               NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
+  { (const char *)"CAN Monitor",                      (UBaseType_t) 2,          1024,      CANMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
   
   //{ (const char *)"CPU Monitor",                      (UBaseType_t) 1,          256,      CpuMonitor,                           NULL,            (TaskHandle_t) NULL,  ALWAYS_ON    },
 };
@@ -106,7 +106,7 @@ void startPeriodicTasks() {
 						 CDH_PeriodicTaskTable[i].priority, 
 						 &CDH_PeriodicTaskTable[i].taskHandle
 						 );
-			if (errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY == rc)
+		if (errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY == rc)
 		{
 			  SerialPrint("Failed to create task.");
 			  break;

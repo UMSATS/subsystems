@@ -8,6 +8,8 @@
 // - Created.
 // 2018-05-19 by Tamkin Rahman
 // - Added payload message handler.
+// 2018-06-23 by Tamkin Rahman
+// - Added function for inserting an element to the beginning of the TX queue.
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- INCLUDES --------------------------------------------------------------
@@ -22,8 +24,8 @@
 // -----------------------------------------------------------------------------------------------
 // ----------------------- DEFINES ---------------------------------------------------------------
 // -----------------------------------------------------------------------------------------------
-#define MAX_RX_QUEUE_SIZE 128
-#define MAX_TX_QUEUE_SIZE 128
+#define MAX_RX_QUEUE_SIZE 512
+#define MAX_TX_QUEUE_SIZE 512
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- VARIABLES -------------------------------------------------------------
@@ -116,10 +118,9 @@ int AddToTXQueue(CAN_Message * message)
     int ix;
     int rc = 0;
 
+    WaitForSemaphore( canTxQueueLock );
     if (TX_Queue_index < MAX_TX_QUEUE_SIZE)
-    {
-        WaitForSemaphore( canTxQueueLock );
-                  
+    {   
         TX_Queue[TX_Queue_index].id = message->id;
         TX_Queue[TX_Queue_index].length = message->length;
         
@@ -128,12 +129,63 @@ int AddToTXQueue(CAN_Message * message)
             TX_Queue[TX_Queue_index].data.bytes[ix] = message->data.bytes[ix];
         }
         
-        TX_Queue_index++;
-
-        xSemaphoreGive( canTxQueueLock);        
+        TX_Queue_index++;     
         
         rc = 1;
     }
+	else
+	{
+		rc = 0;
+	}
+	xSemaphoreGive( canTxQueueLock);
+        
+    return rc;
+}
+// --------------------------------------------------------------------------------
+int InsertToBeginningOfTXQueue(CAN_Message * message)
+{
+    int ix;
+	int iy;
+    int rc = 0;
+	
+	WaitForSemaphore( canTxQueueLock );
+	        
+    if (TX_Queue_index < MAX_TX_QUEUE_SIZE)
+    {
+		if (TX_Queue_index > 0)
+		{
+			// Shift each element over.
+			for (ix = (TX_Queue_index - 1); ix >= 0; ix--)
+			{
+				TX_Queue[ix + 1].id = TX_Queue[ix].id;
+				TX_Queue[ix + 1].length = TX_Queue[ix].length;
+				TX_Queue[ix + 1].extended = TX_Queue[ix].extended;
+				
+				for (iy = 0; iy < TX_Queue[ix].length; iy++)
+				{
+					TX_Queue[ix + 1].data.bytes[iy] = TX_Queue[ix].data.bytes[iy];
+				}
+			}	
+		}
+		
+        TX_Queue[0].id = message->id;
+        TX_Queue[0].length = message->length;
+        
+        for (ix = 0; ix < message->length; ix++)
+        {
+            TX_Queue[0].data.bytes[ix] = message->data.bytes[ix];
+        }
+        
+        TX_Queue_index++;      
+        
+        rc = 1;
+    }
+	else
+	{
+		rc = 0;
+	}
+	
+	xSemaphoreGive( canTxQueueLock);  
         
     return rc;
 }
@@ -144,10 +196,9 @@ int GetNextCANTXMessage(CAN_Message *message)
     int ix;
     int rc = 0;
     
+	WaitForSemaphore( canTxQueueLock );
     if (TX_Queue_index > 0)
-    {
-        WaitForSemaphore( canTxQueueLock );
-        
+    {   
         TX_Queue_index--;
               
         message->id = TX_Queue[TX_Queue_index].id;
@@ -157,8 +208,6 @@ int GetNextCANTXMessage(CAN_Message *message)
         {
             message->data.bytes[ix] = TX_Queue[TX_Queue_index].data.bytes[ix];
         }
-
-        xSemaphoreGive( canTxQueueLock);
         
         rc = 1;
     }
@@ -166,9 +215,12 @@ int GetNextCANTXMessage(CAN_Message *message)
     {
       message = NULL;
     }
+	xSemaphoreGive( canTxQueueLock);
 
     return rc;
 }
+
+
 
 // --------------------------------------------------------------------------------
 void HandleMessage(CAN_Message * message)

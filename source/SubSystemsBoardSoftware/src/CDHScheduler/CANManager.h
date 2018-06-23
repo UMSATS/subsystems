@@ -8,6 +8,8 @@
 // History
 // 2018-05-12 by Tamkin Rahman
 // - Created.
+// 2018-06-23 by Tamkin Rahman
+// - Added function for inserting an element to the start of the CAN TX queue.
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- INCLUDES --------------------------------------------------------------
@@ -42,5 +44,8 @@ int AddToTXQueue(CAN_Message * message);
 
 // Function Description: Get the next message to transmit. If there is no message to transmit, return 0.
 int GetNextCANTXMessage(CAN_Message * message);
+
+// Function Description: Insert the message to transmit into the start of the queue.
+int InsertToBeginningOfTXQueue(CAN_Message * message);
 
 #endif // CAN_MANAGER_H
