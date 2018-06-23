@@ -1,6 +1,6 @@
 #ifndef PERIODIC_TASK_RUNNER_H
 #define PERIODIC_TASK_RUNNER_H
-// UMSATS - CDH Scheduler 
+// UMSATS - CDH Scheduler
 //
 // File Description:
 //   Contains definitions and prototypes for implementing periodic tasks.
@@ -31,7 +31,7 @@
 #define NEVER_ON     100
 
 #ifndef UNUSED
-	#define UNUSED(x) (void)(x)
+#define UNUSED(x) (void)(x)
 #endif
 
 // -----------------------------------------------------------------------------------------------
@@ -40,14 +40,14 @@
 // Register your periodic task(s) at the cdh task table in PeriodicTaskRunner.c.
 enum CDH_TASK_TABLE_INDICES
 {
-    //HELLO_WORLD_HIGH_IX,
-    //HELLO_WORLD_LOW_IX,
-    CHANGE_MOCK_POWER_IX,
-    CAN_MANAGER_IX,
-    CAN_MONITOR_IX,
-    TIME_DELAYED_TASK_MANAGER_IX,
-    //CPU_MONITOR_IX,
-    TOTAL_NUMBER_OF_TASKS,
+	//HELLO_WORLD_HIGH_IX,
+	//HELLO_WORLD_LOW_IX,
+	CHANGE_MOCK_POWER_IX,
+	CAN_MANAGER_IX,
+	TIME_DELAYED_TASK_MANAGER_IX,
+	CAN_MONITOR_IX,
+	//CPU_MONITOR_IX,
+	TOTAL_NUMBER_OF_TASKS,
 };
 
 // -----------------------------------------------------------------------------------------------

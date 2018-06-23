@@ -1,6 +1,6 @@
 #ifndef PAYLOAD_DATA_H
 #define PAYLOAD_DATA_H
-// UMSATS - CDH Scheduler 
+// UMSATS - CDH Scheduler
 //
 // File Description:
 //   Implements an interface for the payload handler.
@@ -28,5 +28,8 @@ extern SemaphoreHandle_t payloadQueueLock;
 // Function Description: Handle the given payload message and saves the data to memory.
 void HandlePayloadMessage(CAN_Message * message);
 
+//------------
+// Function Description: Send all payload data to ground station.
+void DumpPayloadData(void);
 
 #endif // PAYLOAD_DATA_H
