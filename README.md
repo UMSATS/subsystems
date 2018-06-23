@@ -14,7 +14,7 @@ Atmel Studio 7 is required to build and run the Atmel Studio project for this re
 
 ## Arduino Model
 For non-hardware specific portions of the software, they can be developed with the Arduino Due model in:
-* source/SubSystemsBoardSoftware/src/cdh
+* source/SubSystemsBoardSoftware/src/CDHScheduler
 
 The Arduino model requires the following libraries:
 * https://github.com/collin80/due_can
