@@ -2,7 +2,7 @@
 
 Holds the python and arduino code for the subsystems board demo/diagnostics.
 
-## How to Use
+## How to Setup / Use
 * Download the UMSATSGUI.exe and run it to start the GUI. The GUI is self-contained nothing else needs to be installed to run it.
 * Download the folowing arduino libraries:
   * https://github.com/collin80/due_can
