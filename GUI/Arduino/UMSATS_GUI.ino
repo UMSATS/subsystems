@@ -7,6 +7,7 @@
 #define POWER 1
 #define PAYLOAD 2
 #define GROUND 3
+#define COMMS 4
 #define ON 99
 #define OFF 100
 
@@ -15,6 +16,8 @@ int value;
 int well;
 int command;
 const int ledPin =13;
+
+char CommsStateMachineInput= 'A';
 
 //Leave defined if you use native port, comment if using programming port
 //#define Serial SerialUSB
@@ -145,8 +148,8 @@ void sendGround(int command, int well,int seconds){
 if(command != DUMP_PAYLOAD_DATA){
            Serial.print("Sent ground Message to ");
           
-          if(command == TURN_ON_WELL) Serial.print(" turn on well ");
-          else if(command == TURN_OFF_WELL) Serial.print(" turn off well ");
+          if(command == TURN_ON_WELL) Serial.print("turn on well ");
+          else if(command == TURN_OFF_WELL) Serial.print("turn off well ");
           else{Serial.print("ERROR !");}
           
           Serial.print(well);
@@ -231,8 +234,35 @@ switch(rx){
     sendGround(command,well,value);
     break;
 
+    case COMMS:
     
+    while(Serial.available()<= 0){}
+    command = Serial.parseInt();
 
+    switch (command){
+          
+        case 1: CommsStateMachineInput = 'A';
+                Serial.println("Sending 'Power On' command to the comms board.");
+                break;
+        case 2: CommsStateMachineInput = 'B';
+                Serial.println("Sending '2nd Command' command to the comms board.");
+                break;
+        case 3: CommsStateMachineInput = 'C';
+                Serial.println("Sending '3rd Command' command to the comms board.");
+                break;
+        case 4: CommsStateMachineInput = 'D';
+                Serial.println("Sending '4th Command' command to the comms board.");
+                break;
+        case 5: CommsStateMachineInput = 'E';
+                Serial.println("Sending '5t Command' command to the comms board.");
+                break;
+        case 6: CommsStateMachineInput = 'F';
+                Serial.println("Sending '6th COmmand' command to the comms board.");
+                break;
+    }
+    
+    break;
+    
     case ON:
 
     Serial.println("Turning led on.");

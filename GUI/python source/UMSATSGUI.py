@@ -88,7 +88,7 @@ class UMSATS:
         self.frameTerminal.configure(width=310)
 
         self.Listbox1 = Listbox(self.frameTerminal)
-        self.Listbox1.place(relx=0.03, rely=0.1, relheight=0.27, relwidth=0.92
+        self.Listbox1.place(relx=0.03, rely=0.1, relheight=0.35, relwidth=0.92
                 , y=-12, h=12)
         self.Listbox1.configure(background="white")
         self.Listbox1.configure(disabledforeground="#a3a3a3")
@@ -101,7 +101,7 @@ class UMSATS:
         self.Listbox1.configure(width=284)
 
         self.Listbox2 = Listbox(self.frameTerminal)
-        self.Listbox2.place(relx=0.03, rely=0.59, relheight=0.25, relwidth=0.92
+        self.Listbox2.place(relx=0.03, rely=0.59, relheight=0.35, relwidth=0.92
                 , y=-12, h=12)
         self.Listbox2.configure(background="white")
         self.Listbox2.configure(disabledforeground="#a3a3a3")
@@ -230,14 +230,106 @@ class UMSATS:
         self.TabsController_t2.configure(background="#d9d9d9")
         self.TabsController_t2.configure(highlightbackground="#d9d9d9")
         self.TabsController_t2.configure(highlightcolor="black")
+
+
         self.TabsController_t3 = Frame(self.TabsController)
         self.TabsController.add(self.TabsController_t3, padding=3)
-        self.TabsController.tab(3, text="Settings", compound="none", underline="-1"
+        self.TabsController.tab(3, text="Communications", compound="none", underline="-1"
                 ,)
         self.TabsController_t3.configure(background="#d9d9d9")
         self.TabsController_t3.configure(highlightbackground="#d9d9d9")
         self.TabsController_t3.configure(highlightcolor="black")
 
+
+        self.TabsController_t4 = Frame(self.TabsController)
+        self.TabsController.add(self.TabsController_t4, padding=3)
+        self.TabsController.tab(4, text="Settings", compound="none", underline="-1"
+                ,)
+        self.TabsController_t4.configure(background="#d9d9d9")
+        self.TabsController_t4.configure(highlightbackground="#d9d9d9")
+        self.TabsController_t4.configure(highlightcolor="black")
+
+        # Comms Butons
+        self.btnComms1 = Button(self.TabsController_t3)
+        self.btnComms1.place(relx=0.15, rely=0.20, height=24, width=130)
+        self.btnComms1.configure(activebackground="#d9d9d9")
+        self.btnComms1.configure(activeforeground="#000000")
+        self.btnComms1.configure(background="#d9d9d9")
+        self.btnComms1.configure(disabledforeground="#a3a3a3")
+        self.btnComms1.configure(foreground="#000000")
+        self.btnComms1.configure(highlightbackground="#d9d9d9")
+        self.btnComms1.configure(highlightcolor="black")
+        self.btnComms1.configure(pady="0")
+        self.btnComms1.configure(text='''Send 1''')
+        self.btnComms1.bind('<Button-1>', lambda e: UMSATSGUI_support.sendComms(e,self.frameTerminal,1))
+
+        self.btnComms2 = Button(self.TabsController_t3)
+        self.btnComms2.place(relx=0.15, rely=0.40, height=24, width=130)
+        self.btnComms2.configure(activebackground="#d9d9d9")
+        self.btnComms2.configure(activeforeground="#000000")
+        self.btnComms2.configure(background="#d9d9d9")
+        self.btnComms2.configure(disabledforeground="#a3a3a3")
+        self.btnComms2.configure(foreground="#000000")
+        self.btnComms2.configure(highlightbackground="#d9d9d9")
+        self.btnComms2.configure(highlightcolor="black")
+        self.btnComms2.configure(pady="0")
+        self.btnComms2.configure(text='''Send 2''')
+        self.btnComms2.bind('<Button-1>', lambda e: UMSATSGUI_support.sendComms(e,self.frameTerminal,2))
+
+        self.btnComms3 = Button(self.TabsController_t3)
+        self.btnComms3.place(relx=0.15, rely=0.60, height=24, width=130)
+        self.btnComms3.configure(activebackground="#d9d9d9")
+        self.btnComms3.configure(activeforeground="#000000")
+        self.btnComms3.configure(background="#d9d9d9")
+        self.btnComms3.configure(disabledforeground="#a3a3a3")
+        self.btnComms3.configure(foreground="#000000")
+        self.btnComms3.configure(highlightbackground="#d9d9d9")
+        self.btnComms3.configure(highlightcolor="black")
+        self.btnComms3.configure(pady="0")
+        self.btnComms3.configure(text='''Send 3''')
+        self.btnComms3.bind('<Button-1>', lambda e: UMSATSGUI_support.sendComms(e,self.frameTerminal,3))
+
+
+        self.btnComms4 = Button(self.TabsController_t3)
+        self.btnComms4.place(relx=0.55, rely=0.20, height=24, width=130)
+        self.btnComms4.configure(activebackground="#d9d9d9")
+        self.btnComms4.configure(activeforeground="#000000")
+        self.btnComms4.configure(background="#d9d9d9")
+        self.btnComms4.configure(disabledforeground="#a3a3a3")
+        self.btnComms4.configure(foreground="#000000")
+        self.btnComms4.configure(highlightbackground="#d9d9d9")
+        self.btnComms4.configure(highlightcolor="black")
+        self.btnComms4.configure(pady="0")
+        self.btnComms4.configure(text='''Send 4''')
+        self.btnComms4.bind('<Button-1>', lambda e: UMSATSGUI_support.sendComms(e,self.frameTerminal,4))
+
+        self.btnComms5 = Button(self.TabsController_t3)
+        self.btnComms5.place(relx=0.55, rely=0.40, height=24, width=130)
+        self.btnComms5.configure(activebackground="#d9d9d9")
+        self.btnComms5.configure(activeforeground="#000000")
+        self.btnComms5.configure(background="#d9d9d9")
+        self.btnComms5.configure(disabledforeground="#a3a3a3")
+        self.btnComms5.configure(foreground="#000000")
+        self.btnComms5.configure(highlightbackground="#d9d9d9")
+        self.btnComms5.configure(highlightcolor="black")
+        self.btnComms5.configure(pady="0")
+        self.btnComms5.configure(text='''Send 5''')
+        self.btnComms5.bind('<Button-1>', lambda e: UMSATSGUI_support.sendComms(e,self.frameTerminal,5))
+
+        self.btnComms6 = Button(self.TabsController_t3)
+        self.btnComms6.place(relx=0.55, rely=0.60, height=24, width=130)
+        self.btnComms6.configure(activebackground="#d9d9d9")
+        self.btnComms6.configure(activeforeground="#000000")
+        self.btnComms6.configure(background="#d9d9d9")
+        self.btnComms6.configure(disabledforeground="#a3a3a3")
+        self.btnComms6.configure(foreground="#000000")
+        self.btnComms6.configure(highlightbackground="#d9d9d9")
+        self.btnComms6.configure(highlightcolor="black")
+        self.btnComms6.configure(pady="0")
+        self.btnComms6.configure(text='''Send 6''')
+        self.btnComms6.bind('<Button-1>', lambda e: UMSATSGUI_support.sendComms(e,self.frameTerminal,6))
+
+################
         self.entryPower = Entry(self.TabsController_t0)
         self.entryPower.place(relx=0.19, rely=0.39, height=20
                               , relwidth=0.59)
@@ -360,18 +452,6 @@ class UMSATS:
         self.entryGroundControl.configure(textvariable=UMSATSGUI_support.groundWellInput)
         self.entryGroundControl.configure(postcommand=lambda: UMSATSGUI_support.showWells(self.entryGroundControl))
 
-
-        # self.payload_Well_Input = ttk.Combobox(self.TabsController_t1)
-        # self.payload_Well_Input.place(relx=0.19, rely=0.28, height=23
-        #         , relwidth=0.59)
-        # self.payload_Well_Input.configure(background="white")
-        # self.payload_Well_Input.configure(font="TkFixedFont")
-        # self.payload_Well_Input.configure(takefocus="")
-        # self.payload_Well_Input.configure(textvariable=UMSATSGUI_support.payloadWellInput)
-        # self.payload_Well_Input.configure(postcommand= lambda: UMSATSGUI_support.showWells(self.payload_Well_Input))
-
-
-
         self.btnGroundControlSet = Button(self.TabsController_t2)
         self.btnGroundControlSet.place(relx=0.81, rely=0.28, height=24, width=47)
         self.btnGroundControlSet.configure(activebackground="#d9d9d9")
@@ -451,7 +531,7 @@ class UMSATS:
         self.entry_GC_Time.configure(textvariable=UMSATSGUI_support.groundValueInput)
 
 
-        self.Labelframe1 = LabelFrame(self.TabsController_t3)
+        self.Labelframe1 = LabelFrame(self.TabsController_t4)
         self.Labelframe1.place(relx=0.03, rely=0.06, relheight=0.47
                 , relwidth=0.97)
         self.Labelframe1.configure(relief=GROOVE)
@@ -517,7 +597,7 @@ class UMSATS:
                                                                                    UMSATSGUI_support.Baud1Input.get(),
                                                                                    1))
 
-        self.Labelframe3 = LabelFrame(self.TabsController_t3)
+        self.Labelframe3 = LabelFrame(self.TabsController_t4)
         self.Labelframe3.place(relx=0.03, rely=0.5, relheight=0.47
                 , relwidth=0.97)
         self.Labelframe3.configure(relief=GROOVE)
@@ -595,7 +675,7 @@ class UMSATS:
         self.LabelStatus.configure(width=320)
 
         self.btnClear = Button(self.frameTerminal)
-        self.btnClear.place(relx=0.05, rely=0.90, height=24
+        self.btnClear.place(relx=0.05, rely=0.95, height=24
                                   , width=130)
         self.btnClear.configure(activebackground="#d9d9d9")
         self.btnClear.configure(activeforeground="#000000")
@@ -609,7 +689,7 @@ class UMSATS:
         self.btnClear.bind('<Button-1>', lambda e: UMSATSGUI_support.clearDisplay(e, self.Listbox1,self.Listbox2))
 
         self.Message1 = Message(self.LabelStatus)
-        self.Message1.place(relx=0.13, rely=0.37, relheight=0.09, relwidth=0.19
+        self.Message1.place(relx=0.13, rely=0.20, relheight=0.09, relwidth=0.19
                 , y=-12, h=12)
         self.Message1.configure(background="#d9d9d9")
         self.Message1.configure(foreground="#000000")
@@ -619,7 +699,7 @@ class UMSATS:
         self.Message1.configure(width=60)
 
         self.Message2 = Message(self.LabelStatus)
-        self.Message2.place(relx=0.12, rely=0.57, relheight=0.09, relwidth=0.22
+        self.Message2.place(relx=0.12, rely=0.40, relheight=0.09, relwidth=0.22
                 , y=-12, h=12)
         self.Message2.configure(background="#d9d9d9")
         self.Message2.configure(foreground="#000000")
@@ -629,7 +709,7 @@ class UMSATS:
         self.Message2.configure(width=69)
 
         self.Message3 = Message(self.LabelStatus)
-        self.Message3.place(relx=0.13, rely=0.78, relheight=0.16, relwidth=0.2
+        self.Message3.place(relx=0.13, rely=0.61, relheight=0.16, relwidth=0.2
                 , y=-12, h=12)
         self.Message3.configure(background="#d9d9d9")
         self.Message3.configure(foreground="#000000")
