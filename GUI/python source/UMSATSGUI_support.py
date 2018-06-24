@@ -119,6 +119,8 @@ def updateDisplay(event):
 
         else:
             id = ""
+        if((id == 0x100) or (id == 0x200) or (id == 0x300) or (id == 0x400) or (id == 0x500) ):
+            pass;
         if(id == "0x600"):
             length = int(data[3])
             #print("ID: "+ id+ " len: "+ str(length))
