@@ -9,7 +9,7 @@
 // 2018-06-15 by Tamkin Rahman
 // - Fix bug where the TimeDelayedTaskManager was accessing the queue without first taking the
 //   semaphore for the queue.
-// 2018-06-22 by Tamkin Rahman
+// 2018-06-22 by Tamkin Rahman8
 // - Added "turn off well" and "dump payload data" commands.
 
 // -----------------------------------------------------------------------------------------------
@@ -37,6 +37,7 @@ typedef struct
 	union
 	{
 		unsigned char wellNumber;
+		unsigned char adcsNumber;
 		unsigned char bytes[MAX_COMMAND_DATA_BYTES];
 	} CommandData;
 } TimeDelayedTask;
@@ -57,6 +58,7 @@ void TurnOnWellCommand(unsigned char wellNumber);
 
 void TurnOffWellCommand(unsigned char wellNumber);
 
+void HandleADCSReading(unsigned char adcsNumber);
 
 // Description - Remove the specified element from the Task Queue.
 void RemoveFromQueue(int index);
@@ -113,6 +115,7 @@ int AddToTimeDelayedTaskQueue(CAN_Message * message)
 			case(DUMP_PAYLOAD_DATA):
 			{
 				TaskQueue[Queue_index].command = message->data.GroundStationData.command;
+				TaskQueue[Queue_index].CommandData.adcsNumber = message->data.GroundStationData.dataBytes.adcsCommand.adcsNumber;
 				
 				TaskQueue[Queue_index].secondsUntilTaskStart = 0;
 				TaskQueue[Queue_index].secondsUntilTaskStart += message->data.GroundStationData.dataBytes.payLoadCommand.secondsUntilCommandLSB[0];
@@ -121,6 +124,23 @@ int AddToTimeDelayedTaskQueue(CAN_Message * message)
 				TaskQueue[Queue_index].secondsUntilTaskStart += (message->data.GroundStationData.dataBytes.payLoadCommand.secondsUntilCommandLSB[3] << 24);
 				
 				SerialPrint("Added DUMP PAYLOAD DATA command to task queue.\r\n");
+				
+				Queue_index++;
+				rc = 1;
+				break;
+			}
+			case(GET_ADC_READING):
+			{
+				TaskQueue[Queue_index].command = message->data.GroundStationData.command;
+				TaskQueue[Queue_index].CommandData.adcsNumber = message->data.GroundStationData.dataBytes.adcsCommand.adcsNumber;
+				
+				TaskQueue[Queue_index].secondsUntilTaskStart = 0;
+				TaskQueue[Queue_index].secondsUntilTaskStart += message->data.GroundStationData.dataBytes.adcsCommand.secondsUntilCommandLSB[0];
+				TaskQueue[Queue_index].secondsUntilTaskStart += (message->data.GroundStationData.dataBytes.adcsCommand.secondsUntilCommandLSB[1] << 8);
+				TaskQueue[Queue_index].secondsUntilTaskStart += (message->data.GroundStationData.dataBytes.adcsCommand.secondsUntilCommandLSB[2] << 16);
+				TaskQueue[Queue_index].secondsUntilTaskStart += (message->data.GroundStationData.dataBytes.adcsCommand.secondsUntilCommandLSB[3] << 24);
+				
+				SerialPrint("Added GET ADCS READING command to task queue.\r\n");
 				
 				Queue_index++;
 				rc = 1;
@@ -183,6 +203,12 @@ void TimeDelayedTaskManager(void *pvParameters)
 							RemoveFromQueue(ix);
 							break;
 						}
+						case(GET_ADC_READING):
+						{
+							HandleADCSReading(TaskQueue[ix].CommandData.adcsNumber);
+							RemoveFromQueue(ix);
+							break;
+						}
 					}
 				}
 				else
@@ -228,6 +254,12 @@ void TurnOffWellCommand(unsigned char wellNumber)
 	{
 		SerialPrint("ERROR: Failed to add TURN ON WELL command to TX Queue\r\n");
 	}
+}
+
+// -----------------------------------------------------------------------------------------------
+void HandleADCSReading(unsigned char adcsNumber)
+{
+	SerialPrint("Handled ADCS reading. No other actions taken.\r\n");
 }
 
 // -----------------------------------------------------------------------------------------------

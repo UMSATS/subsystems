@@ -30,6 +30,7 @@
 #define TURN_ON_WELL          0x01
 #define TURN_OFF_WELL         0x02
 #define DUMP_PAYLOAD_DATA     0x03
+#define GET_ADC_READING       0x04
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- STRUCTURES AND STRUCTURE TYPEDEFS -------------------------------------
@@ -54,6 +55,13 @@ typedef union
           unsigned char wellNumber;
           unsigned char secondsUntilCommandLSB[4]; 
         } payLoadCommand;
+		
+		struct  
+		{
+			unsigned char adcsNumber;
+			unsigned char secondsUntilCommandLSB[4]; 
+		} adcsCommand;
+		
       } dataBytes;
     } GroundStationData;
 

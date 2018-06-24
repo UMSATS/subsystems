@@ -75,11 +75,7 @@ void HandlePayloadMessage(CAN_Message * message)
 
 void DumpPayloadData()
 {
-<<<<<<< HEAD
 	SerialPrint("Received command to dump all payload data. No other actions taken.\r\n");
-=======
-	SerialPrint("Received command to dump all payload data.\r\n");
->>>>>>> 0a2b4f3f68327e21792cb7f61f977e5c4941d26f
 }
 
 
