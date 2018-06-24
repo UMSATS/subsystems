@@ -114,7 +114,11 @@ def updateDisplay(event):
         data1 = threadQueue1.get_nowait()  # Get any data from the queue.
         if LOGGING:logFile1.write(data1) ; # save it to log file
         data = data1.split(" ")
-        id = data[1]
+        if(len(data)>1):
+            id = data[1]
+
+        else:
+            id = ""
         if(id == "0x600"):
             length = int(data[3])
             #print("ID: "+ id+ " len: "+ str(length))
