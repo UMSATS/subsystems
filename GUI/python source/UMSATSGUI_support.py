@@ -38,14 +38,14 @@ def set_Tk_var():
     Baud2Input= StringVar()
 
 
-    global powerInput,payloadWellInput,payloadValueInput,groundWellInput,groundValueInput
+    global powerInput,payloadWellInput,payloadValueInput,groundWellInput,groundValueInput,ADC_Num
 
     powerInput = StringVar()
     payloadWellInput = StringVar()
     payloadValueInput = StringVar()
     groundWellInput = StringVar()
     groundValueInput = StringVar()
-
+    ADC_Num = StringVar()
 
     global che47
     che47 = StringVar()
@@ -379,13 +379,25 @@ def sendDumpPayload(e,frame):
     groundWellInput.set("")
     groundValueInput.set("")
 
+
+def sendADC(e,frame):
+    print("sending adcs")
+
+    writeCommand(frame.children['!entry'],frame.children['!listbox'], 1, "GROUND " + "4 " +ADC_Num.get()+" " + groundValueInput.get())
+    groundWellInput.set("")
+    groundValueInput.set("")
+
+
 def showWells(combo):
 
     wells = [x for x in range(1,6)]
     combo.configure(values=wells)
     #print("showing wells")
 
+def showADCs(combo):
 
+    adcs = [c for c in range(1,5)]
+    combo.configure(values=adcs)
 
 if __name__ == '__main__':
     import UMSATSGUI

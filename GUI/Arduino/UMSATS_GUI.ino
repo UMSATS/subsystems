@@ -145,7 +145,7 @@ void sendGround(int command, int well,int seconds){
 
 
   
-if(command != DUMP_PAYLOAD_DATA){
+if(command == TURN_ON_WELL || command == TURN_OFF_WELL){
            Serial.print("Sent ground Message to ");
           
           if(command == TURN_ON_WELL) Serial.print("turn on well ");
@@ -159,12 +159,20 @@ if(command != DUMP_PAYLOAD_DATA){
           Serial.println();
             }
 
-else{
+else if (command == DUMP_PAYLOAD_DATA){
   
   Serial.print("Sent ground message to dump payload data in ");
   Serial.print(value);
   Serial.println(" seconds.");
   
+  }
+else if (command == GET_ADC_READING){
+  
+    Serial.print("Sent ground message to get reading of ADC ");
+    Serial.print(well);
+    Serial.print(" in ");
+    Serial.print(value);
+    Serial.println(" seconds.");
   }
   Can0.sendFrame(outgoing);  }
 

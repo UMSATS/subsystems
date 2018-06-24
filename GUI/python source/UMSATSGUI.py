@@ -205,7 +205,7 @@ class UMSATS:
         self.style.map('TNotebook.Tab', background=
             [('selected', _compcolor), ('active',_ana2color)])
         self.TabsController = ttk.Notebook(self.ModuleFrameLabel)
-        self.TabsController.place(relx=0.03, rely=0.04, relheight=0.42
+        self.TabsController.place(relx=0.03, rely=0.04, relheight=0.60
                 , relwidth=0.9, y=-12, h=12)
         self.TabsController.configure(width=314)
         self.TabsController.configure(takefocus="")
@@ -445,7 +445,7 @@ class UMSATS:
         self.btnPayload2Set.bind('<Button-1>', lambda e: UMSATSGUI_support.sendPayload(e, self.frameTerminal))
 
         self.entryGroundControl = ttk.Combobox(self.TabsController_t2)
-        self.entryGroundControl.place(relx=0.19, rely=0.28, height=23, relwidth=0.59)
+        self.entryGroundControl.place(relx=0.19, rely=0.20, height=23, relwidth=0.59)
         self.entryGroundControl.configure(background="white")
         self.entryGroundControl.configure(font="TkFixedFont")
         self.entryGroundControl.configure(takefocus="")
@@ -453,7 +453,7 @@ class UMSATS:
         self.entryGroundControl.configure(postcommand=lambda: UMSATSGUI_support.showWells(self.entryGroundControl))
 
         self.btnGroundControlSet = Button(self.TabsController_t2)
-        self.btnGroundControlSet.place(relx=0.81, rely=0.28, height=24, width=47)
+        self.btnGroundControlSet.place(relx=0.81, rely=0.20, height=24, width=47)
         self.btnGroundControlSet.configure(activebackground="#d9d9d9")
         self.btnGroundControlSet.configure(activeforeground="#000000")
         self.btnGroundControlSet.configure(background="#d9d9d9")
@@ -493,7 +493,7 @@ class UMSATS:
         self.Label9.configure(width=104)
 
         self.Label13 = Label(self.TabsController_t2)
-        self.Label13.place(relx=0.06, rely=0.44, height=21, width=56)
+        self.Label13.place(relx=0.06, rely=0.35, height=21, width=56)
         self.Label13.configure(activebackground="#f9f9f9")
         self.Label13.configure(activeforeground="black")
         self.Label13.configure(background="#d9d9d9")
@@ -505,7 +505,7 @@ class UMSATS:
         self.Label13.configure(width=56)
 
         self.btnGroundControl2Set = Button(self.TabsController_t2)
-        self.btnGroundControl2Set.place(relx=0.81, rely=0.61, height=24, width=47)
+        self.btnGroundControl2Set.place(relx=0.81, rely=0.42, height=24, width=47)
         self.btnGroundControl2Set.configure(activebackground="#d9d9d9")
         self.btnGroundControl2Set.configure(activeforeground="#000000")
         self.btnGroundControl2Set.configure(background="#d9d9d9")
@@ -517,8 +517,42 @@ class UMSATS:
         self.btnGroundControl2Set.configure(text='''On''')
         self.btnGroundControl2Set.bind('<Button-1>', lambda e: UMSATSGUI_support.sendGroundOn(e, self.frameTerminal))
 
+        self.ADCCombobox1 = ttk.Combobox(self.TabsController_t2)
+        self.ADCCombobox1.place(relx=0.19, rely=0.60, height=23
+                , relwidth=0.59)
+        self.ADCCombobox1.configure(textvariable=UMSATSGUI_support.ADC_Num)
+        self.ADCCombobox1.configure(takefocus="")
+        self.ADCCombobox1.configure(postcommand=lambda: UMSATSGUI_support.showADCs(self.ADCCombobox1))
+
+
+        self.LabelADC = Label(self.TabsController_t2)
+        self.LabelADC.place(relx=0.07, rely=0.55, height=21, width=50)
+        self.LabelADC.configure(activebackground="#f9f9f9")
+        self.LabelADC.configure(activeforeground="black")
+        self.LabelADC.configure(background="#d9d9d9")
+        self.LabelADC.configure(disabledforeground="#a3a3a3")
+        self.LabelADC.configure(foreground="#000000")
+        self.LabelADC.configure(highlightbackground="#d9d9d9")
+        self.LabelADC.configure(highlightcolor="black")
+        self.LabelADC.configure(text='''ADC #:''')
+
+
+        self.btnGroundControlADC = Button(self.TabsController_t2)
+        self.btnGroundControlADC.place(relx=0.81, rely=0.60, height=24, width=47)
+        self.btnGroundControlADC.configure(activebackground="#d9d9d9")
+        self.btnGroundControlADC.configure(activeforeground="#000000")
+        self.btnGroundControlADC.configure(background="#d9d9d9")
+        self.btnGroundControlADC.configure(disabledforeground="#a3a3a3")
+        self.btnGroundControlADC.configure(foreground="#000000")
+        self.btnGroundControlADC.configure(highlightbackground="#d9d9d9")
+        self.btnGroundControlADC.configure(highlightcolor="black")
+        self.btnGroundControlADC.configure(pady="0")
+        self.btnGroundControlADC.configure(text='''Send''')
+        self.btnGroundControlADC.bind('<Button-1>', lambda e: UMSATSGUI_support.sendADC(e, self.frameTerminal))
+
+
         self.entry_GC_Time = Entry(self.TabsController_t2)
-        self.entry_GC_Time.place(relx=0.19, rely=0.61,height=20, relwidth=0.59)
+        self.entry_GC_Time.place(relx=0.19, rely=0.42,height=20, relwidth=0.59)
         self.entry_GC_Time.configure(background="white")
         self.entry_GC_Time.configure(disabledforeground="#a3a3a3")
         self.entry_GC_Time.configure(font="TkFixedFont")
@@ -664,7 +698,7 @@ class UMSATS:
                                                                                    2))
 
         self.LabelStatus = LabelFrame(self.ModuleFrameLabel)
-        self.LabelStatus.place(relx=0.03, rely=0.48, relheight=0.49
+        self.LabelStatus.place(relx=0.03, rely=0.70, relheight=0.25
                 , relwidth=0.91, y=-12, h=12)
         self.LabelStatus.configure(relief=GROOVE)
         self.LabelStatus.configure(foreground="black")

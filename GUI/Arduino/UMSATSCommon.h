@@ -11,6 +11,8 @@
 // History
 // 2018-05-14 by Tamkin Rahman
 // - Created.
+// 2018-06-23 by Tamkin Rahman
+// - Added CAN ID for Serial Messages.
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- DEFINES ---------------------------------------------------------------
@@ -22,15 +24,13 @@
 #define CDH_ID         0x300U
 #define DIAGNOSTIC_ID  0x400U
 #define PAYLOAD_ID     0x500U
-#define SERIAL_ID      0x600U
+#define SERIAL_ID     0x600U  // Message ID where serial data is redirected to.
 
 // Ground station commands (TURN ON WELL and TURN OFF WELL are also used by CDH messages).
 #define TURN_ON_WELL          0x01
 #define TURN_OFF_WELL         0x02
 #define DUMP_PAYLOAD_DATA     0x03
-
-// Comms commands
-
+#define GET_ADC_READING       0x04
 
 // -----------------------------------------------------------------------------------------------
 // ----------------------- STRUCTURES AND STRUCTURE TYPEDEFS -------------------------------------
@@ -55,6 +55,13 @@ typedef union
           unsigned char wellNumber;
           unsigned char secondsUntilCommandLSB[4]; 
         } payLoadCommand;
+    
+    struct  
+    {
+      unsigned char adcsNumber;
+      unsigned char secondsUntilCommandLSB[4]; 
+    } adcsCommand;
+    
       } dataBytes;
     } GroundStationData;
 
