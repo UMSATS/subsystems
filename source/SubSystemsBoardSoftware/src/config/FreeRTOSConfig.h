@@ -88,11 +88,11 @@
 #define configMAX_PRIORITIES      ( ( unsigned portBASE_TYPE ) 8 )
 #define configMINIMAL_STACK_SIZE  ( ( unsigned portSHORT ) 256 )
 /* configTOTAL_HEAP_SIZE is not used when heap_3.c is used. */
-#define configTOTAL_HEAP_SIZE     ( ( size_t ) ( 1024*25 ) )
-#define configMAX_TASK_NAME_LEN   ( 32 )
+#define configTOTAL_HEAP_SIZE     ( ( size_t ) ( 1024 * 10 ) )  // Works out to 1024 * 16 * 4 ~= 64k bytes (i.e. the max).
+#define configMAX_TASK_NAME_LEN   ( 16 )
 #define configUSE_TRACE_FACILITY  0
 #define configUSE_16_BIT_TICKS    0
-#define configIDLE_SHOULD_YIELD   1
+#define configIDLE_SHOULD_YIELD   0
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES     0
