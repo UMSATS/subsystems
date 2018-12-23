@@ -1,3 +1,12 @@
+#   UMSATS GUI
+#
+#   File Description:
+#       This file contains functions related to using the serial ports.
+#
+#   History
+#   2018-05 by Joseph Howarth.
+#       -   Created.
+
 import serial
 import serial.tools.list_ports as list_ports
 import time
