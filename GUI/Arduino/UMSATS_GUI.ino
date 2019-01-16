@@ -160,10 +160,10 @@ void radio()
 
 void sendPower(int value){
  //This function sends a power message over the CAN bus to the CDH module.
- //An aknowledgment is sent over serial back to the GUI.
- //
+ //An acknowledgment is sent over serial back to the GUI.
+ //   
  //Parameters:
- //  value: an integer that represesnts the power level.
+ //  value: an integer that represents the power level.
 
   
   CAN_FRAME outgoing;
@@ -191,11 +191,11 @@ void sendPower(int value){
   
  void sendPayload( int well,int value){
  //This function sends a payload data message over the CAN bus to the CDH module.
- //An aknowledgment is sent over serial back to the GUI.
+ //An acknowledgment is sent over serial back to the GUI.
  //
  //Parameters:
  //  well:  an integer representing which well the data is from.
- //  value: an integer that represesnts the payload data.
+ //  value: an integer that represents the payload data.
 
   
   CAN_FRAME outgoing;
@@ -227,7 +227,7 @@ void sendPower(int value){
  
 void sendGround(int command, int well,int seconds){
  //This function sends a ground station message over the CAN bus to the CDH module.
- //An aknowledgment is sent over serial back to the GUI.
+ //An acknowledgment is sent over serial back to the GUI.
  //
  //Parameters:
  //  command:  This parameter selects the type of command sent to CDH, 
@@ -291,7 +291,7 @@ void sendGround(int command, int well,int seconds){
 }
   
 void printFrame(CAN_FRAME &frame) {
-  //This function preints out a CAN frame to the GUI.
+  //This function prints out a CAN frame to the GUI.
 
    Serial.print("ID: 0x");
    Serial.print(frame.id, HEX);
@@ -314,7 +314,7 @@ void loop(){
 
   CAN_FRAME incoming;
 
-  if(comms_sm_input == 'a'{
+  if(comms_sm_input == 'a'){
     radio();
   }
 
@@ -327,71 +327,71 @@ void loop(){
 
   rx = Serial.parseInt();
 
-	switch(rx){
-		
-		case POWER:
+    switch(rx){
+        
+      case POWER:
 
-			while(Serial.available()<= 0){}
-			value = Serial.parseInt();
-		 
-			sendPower(value);
+        while(Serial.available()<= 0){}
+        value = Serial.parseInt();
+   
+        sendPower(value);
 
-			break;
-
-
-		case PAYLOAD:
-			
-			while(Serial.available()<= 0){}
-			well = Serial.parseInt();
-			
-			while(Serial.available()<= 0){}
-			value = Serial.parseInt();
-			
-			sendPayload(well,value);
-
-			break;
+      break;
 
 
-		case GROUND:
+      case PAYLOAD:
+    
+        while(Serial.available()<= 0){}
+        well = Serial.parseInt();
+    
+        while(Serial.available()<= 0){}
+        value = Serial.parseInt();
+    
+        sendPayload(well,value);
 
-			while(Serial.available()<= 0){}
-			command = Serial.parseInt();
-			
-			while(Serial.available()<= 0){}
-			well = Serial.parseInt();
-			
-			while(Serial.available()<= 0){}
-			value = Serial.parseInt();
-			
-			sendGround(command,well,value);
-
-			break;
+      break;
 
 
-		case COMMS:
-			
-			while(Serial.available()<= 0){}
-			command = Serial.parseInt();
+      case GROUND:
 
-			switch (command){
-						
-					case 0: 
+        while(Serial.available()<= 0){}
+        command = Serial.parseInt();
+    
+        while(Serial.available()<= 0){}
+        well = Serial.parseInt();
+    
+        while(Serial.available()<= 0){}
+        value = Serial.parseInt();
+    
+        sendGround(command,well,value);
 
-						comms_sm_input = 'a';
-						Serial.println("Starting radio demo.");
-
-						break;
+      break;
 
 
-					case 1:
-					
-						comms_sm_input = 'b';
-						Serial.println("Stopping radio demo..");
+      case COMMS:
+    
+        while(Serial.available()<= 0){}
+        command = Serial.parseInt();
 
-						break;
-			}
-			
-			break;   
-	 }
+        switch (command){
+          
+          case 0: 
+
+            comms_sm_input = 'a';
+            Serial.println("Starting radio demo.");
+
+          break;
+
+
+          case 1:
+        
+            comms_sm_input = 'b';
+            Serial.println("Stopping radio demo..");
+
+          break;
+        }
+    
+        break;   
+    }
   
 }

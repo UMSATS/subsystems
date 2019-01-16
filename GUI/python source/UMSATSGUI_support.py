@@ -109,7 +109,7 @@ def init(top, gui, *args, **kwargs):
 
     top_level.bind_all('<<newSerialData>>', update_display)  # When a <<newSerialData>> event is received, update the display.
 
-    closeEvent = threading.Event()  # This event signals to stop the read function when the program is closed
+    closeEvent = threading.Event()  # This event signals to stop the read function when the program is closed.
 
     threadQueue1 = queue.Queue()  # This queue is used to transfer data from the read thread to the gui to be displayed.
     thread1 = None
@@ -151,7 +151,7 @@ def update_display(event):
         else:
             can_id = ""
 
-        # For now ignore any mesasge with ID except Serial_ID.
+        # For now ignore any message with ID except Serial_ID.
         if can_id in ACCEPTED_IDS:
             pass
 
@@ -174,7 +174,7 @@ def update_display(event):
 
                 display2.see(display2.size())
         else:
-            # If the message wasn't a CAN message, then it was from the arduino, so show it in top window.
+            # If the message wasn't a CAN message, then it was from the Arduino, so show it in top window.
             display1.insert(END, data1)
             display1.see(display1.size())  # This scrolls the window so the new text is always visible.
 
@@ -278,7 +278,7 @@ def write_command(display, can, data):
                 logFile2.write("-> " + full + "\n")
 
 
-    # Show command in display
+    # Show command in display.
     display.insert(END, "-> "+data + '\n')
     display.see(display.size())
 
@@ -353,7 +353,7 @@ def setup_serial(e, port, baudrate, can):
 
     if can == 1:
 
-        # If the Can bus already has a serial port , close it.
+        # If the Can bus already has a serial port, close it.
         if serial1 is not None:
             print("closed serial port")
             serial1.close()
